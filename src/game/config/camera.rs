@@ -1,6 +1,7 @@
 use bevy::prelude::*;
+use serde::{Serialize, Deserialize};
 
-#[derive(Resource, Debug)]
+#[derive(Resource, Debug, Clone, Serialize, Deserialize)]
 pub struct CameraConfig {
     pub position: Vec3,
     pub target: Vec3,

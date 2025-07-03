@@ -1,9 +1,16 @@
 use bevy::prelude::*;
 
-use crate::game::player::{
-    components::Player, 
-    config::PlayerConfig, 
-    events::SpawnPlayerEvent
+use crate::game::{
+    events::{
+        player::SpawnPlayerEvent
+    },
+    player::{
+        components::Player, 
+        components::Velocity, 
+    },
+    config::{
+        player::PlayerConfig,
+    }
 };
 
 
@@ -25,6 +32,7 @@ pub fn spawn_player(
             ..default()
         },
         Player,
+        Velocity::default(),
     ));
 }
 
@@ -56,7 +64,42 @@ pub fn respawn_player_system(
                 ..default()
             },
             Player,
+            Velocity::default(),
         ));
+    }
+}
+
+pub fn player_movement_input_system(
+    keyboard: Res<Input<KeyCode>>,
+    mut query: Query<&mut Velocity, With<Player>>,
+) {
+    for mut velocity in query.iter_mut() {
+        let mut dir = Vec2::ZERO;
+
+        if keyboard.pressed(KeyCode::W) {
+            dir.y += 1.0;
+        }
+        if keyboard.pressed(KeyCode::S) {
+            dir.y -= 1.0;
+        }
+        if keyboard.pressed(KeyCode::A) {
+            dir.x -= 1.0;
+        }
+        if keyboard.pressed(KeyCode::D) {
+            dir.x += 1.0;
+        }
+
+        velocity.xz = dir.normalize_or_zero() * 2.0; // скорость движения
+    }
+}
+
+pub fn player_apply_velocity_system(
+    time: Res<Time>,
+    mut query: Query<(&mut Transform, &Velocity), With<Player>>,
+) {
+    for (mut transform, velocity) in query.iter_mut() {
+        let delta = Vec3::new(velocity.xz.x, 0.0, velocity.xz.y) * time.delta_seconds();
+        transform.translation += delta;
     }
 }
 

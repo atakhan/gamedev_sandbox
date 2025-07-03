@@ -1,5 +1,6 @@
 use bevy::prelude::*;
-use super::{components::FollowCamera, config::CameraConfig};
+use crate::game::config::camera::CameraConfig;
+use super::{components::FollowCamera};
 
 pub fn spawn_camera(mut commands: Commands) {
     commands.spawn((

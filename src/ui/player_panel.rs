@@ -1,10 +1,14 @@
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
-use crate::game::player::{
-    config::PlayerConfig, 
-    events::SpawnPlayerEvent,
-    components::Player,
+use crate::game::{
+    events::{
+        player::SpawnPlayerEvent
+    },
+    player::{
+        components::Player,
+    },
+    config::player::PlayerConfig, 
 };
 use crate::ui::UiVisibility;
 
@@ -40,7 +44,7 @@ pub fn show_player_panel(
         });
 
     egui::Window::new("Player Controls")
-        .fixed_pos(egui::pos2(10.0, 220.0))
+        .fixed_pos(egui::pos2(10.0, 205.0))
         .fixed_size(egui::vec2(300.0, 180.0))
         .show(contexts.ctx_mut(), |ui| {
         if let Ok(mut transform) = query.get_single_mut() {
