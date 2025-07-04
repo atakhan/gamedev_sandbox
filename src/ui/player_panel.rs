@@ -2,24 +2,27 @@ use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
 use crate::game::{
-    events::{
-        player::SpawnPlayerEvent
-    },
-    player::{
-        components::Player,
-    },
+    events::player::SpawnPlayerEvent as SpawnEvent,
+    player::components::Player,
     config::player::PlayerConfig, 
 };
-use crate::ui::UiVisibility;
+use crate::ui::Screens;
+use crate::ui::ScenePanelsVisibility;
 
 
 pub fn show_player_panel(
     mut contexts: EguiContexts, 
     mut config: ResMut<PlayerConfig>,
-    mut spawn_event_writer: EventWriter<SpawnPlayerEvent>,
+    mut spawn_event_writer: EventWriter<SpawnEvent>,
     mut query: Query<&mut Transform, With<Player>>,
-    ui_state: Res<UiVisibility>,
+    ui_state: Res<ScenePanelsVisibility>,
+    screen_state: Res<State<Screens>>,
 ) {
+
+    if *screen_state.get() != Screens::SceneView {
+        return;
+    }
+
     if !ui_state.show_player {
         return;
     }
@@ -38,7 +41,7 @@ pub fn show_player_panel(
             ui.add(egui::Slider::new(&mut config.spawn_position.z, -50.0..=50.0).text("Z"));
 
             if ui.button("Respawn Player").clicked() {
-                spawn_event_writer.send(SpawnPlayerEvent);
+                spawn_event_writer.send(SpawnEvent);
             }
 
         });

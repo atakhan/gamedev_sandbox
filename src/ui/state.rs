@@ -1,20 +1,38 @@
-use bevy::ecs::system::Resource;
+use bevy::ecs::{schedule::States, system::Resource};
 
 #[derive(Resource, Debug)]
-pub struct UiVisibility {
+pub struct ScenePanelsVisibility {
     pub show_camera: bool,
     pub show_player: bool,
-    pub show_save_scene_dialog: bool,
-    pub new_scene_name: String,
 }
 
-impl Default for UiVisibility {
+impl Default for ScenePanelsVisibility {
     fn default() -> Self {
         Self {
             show_camera: false,
             show_player: false,
-            show_save_scene_dialog: false,
-            new_scene_name: String::from("Default scene"),
         }
     }
 }
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash, States)]
+pub enum Screens {
+    SceneManager,  // Меню выбора сцен
+    SceneView,     // Просмотр/редактирование сцены
+}
+impl Default for Screens {
+    fn default() -> Self {Self::SceneManager}
+}
+
+#[derive(Resource, Debug, Clone)]
+pub struct ScreenState {
+    pub current_screen: Screens,
+}
+impl Default for ScreenState {
+    fn default() -> Self {
+        Self {
+            current_screen: Screens::default()
+        }
+    }
+}
+

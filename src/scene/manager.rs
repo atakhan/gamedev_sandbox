@@ -20,15 +20,16 @@ pub fn load_scene(name: &str) -> Option<SceneData> {
 }
 
 pub fn list_scenes() -> Vec<String> {
-    let mut names = vec![];
-    if let Ok(entries) = fs::read_dir("scenes") {
-        for entry in entries.flatten() {
-            if let Some(fname) = entry.path().file_stem() {
-                if let Some(name) = fname.to_str() {
-                    names.push(name.to_string());
-                }
-            }
-        }
+    let path = std::path::Path::new("scenes");
+    if !path.exists() {
+        return vec![];
     }
-    names
+
+    match fs::read_dir(path) {
+        Ok(entries) => entries
+            .filter_map(|entry| entry.ok())
+            .filter_map(|e| e.path().file_stem()?.to_str().map(|s| s.to_string()))
+            .collect(),
+        Err(_) => vec![],
+    }
 }

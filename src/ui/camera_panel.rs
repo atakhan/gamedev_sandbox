@@ -11,7 +11,10 @@ use crate::{
         data::SceneData,
         manager::save_scene,
     }, 
-    ui::UiVisibility
+    ui::{
+        ScenePanelsVisibility,
+        Screens,
+    },
 };
 
 pub fn show_camera_panel(
@@ -19,11 +22,18 @@ pub fn show_camera_panel(
     mut camera_config: ResMut<CameraConfig>,
     player_config: ResMut<PlayerConfig>,
     player_query: Query<&Transform, With<Player>>,
-    ui_state: Res<UiVisibility>,
+    ui_state: Res<ScenePanelsVisibility>,
+    screen_state: Res<State<Screens>>,
 ) {
+
+    if *screen_state.get() != Screens::SceneView {
+        return;
+    }
+
     if !ui_state.show_camera {
         return;
     }
+
     egui::Window::new("Camera Settings")
         .fixed_pos(egui::pos2(10.0, 30.0))
         .show(contexts.ctx_mut(), |ui| {
