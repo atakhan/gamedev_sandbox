@@ -27,5 +27,11 @@ pub fn show_scene_manager(
                 }
             });
         }
+
+        if ui.button("new scene").clicked() {
+            // Переключаемся в экран игры
+            next_state.set(Screens::SceneView);
+            // TODO: создать новую сцену с дефолтными настройками
+        }
     });
 }

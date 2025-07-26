@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy::ecs::system::IntoSystem; // 👈 обязательно импортируем это!
+use bevy::ecs::system::IntoSystem;
 use bevy_egui::EguiPlugin;
 
 use crate::{
@@ -45,10 +45,23 @@ pub fn run() {
         .insert_resource(ScenePanelsVisibility::default())
         .insert_resource(ScreenState::default())
 
+        // Системы запуска
+        .add_systems(
+            Startup,
+            (
+                camera_systems::spawn_camera,
+                ground_systems::spawn_ground,
+                player_systems::spawn_player,
+            ),
+        )
+
         // UI: Меню сцен
         .add_systems(
             Update,
-            IntoSystem::into_system(show_scene_manager).run_if(in_state(Screens::SceneManager)),
+            IntoSystem::into_system(
+                show_scene_manager
+            )
+            .run_if(in_state(Screens::SceneManager)),
         )
 
         // UI: Интерфейс сцены
@@ -62,16 +75,6 @@ pub fn run() {
             .run_if(in_state(Screens::SceneView)),
         )
 
-        // Системы запуска
-        .add_systems(
-            Startup,
-            (
-                camera_systems::spawn_camera,
-                ground_systems::spawn_ground,
-                player_systems::spawn_player,
-            ),
-        )
-
         // Основные игровые системы
         .add_systems(
             Update,
@@ -80,7 +83,8 @@ pub fn run() {
                 player_systems::player_movement_input_system,
                 player_systems::player_apply_velocity_system,
                 camera_systems::camera_follow_system,
-            ),
+            )
+            .run_if(in_state(Screens::SceneView)),
         )
 
         .run();

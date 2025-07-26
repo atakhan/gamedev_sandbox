@@ -10,7 +10,8 @@ pub fn show_menu(
 ) {
     egui::TopBottomPanel::top("menu_bar").show(contexts.ctx_mut(), |ui| {
         ui.horizontal(|ui| {
-
+            ui.label("Position:");
+            ui.heading("Some header");
             if ui.button("Scenes").clicked() {
                 next_screen_state.set(Screens::SceneManager);
                 
